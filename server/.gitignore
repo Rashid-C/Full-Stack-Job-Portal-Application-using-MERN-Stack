@@ -1,0 +1,68 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Build directories
+dist/
+build/
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.sqlite3
+*.db
+*.sql
+*.tar.gz
+dump.rdb
+*.lock
+
+# Process management
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.iml
+
+# NPM & Yarn specific
+.npm/
+.yarn/
+.pnp.*
+.pnp/
+.yarnrc.yml
+.yarn-integrity
+
+# Testing
+jest/
+jest-coverage/
+.nyc_output/
+.vscode-test/
+
+# Lint and formatting tools
+.eslintcache
