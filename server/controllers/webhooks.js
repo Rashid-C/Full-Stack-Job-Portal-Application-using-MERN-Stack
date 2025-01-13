@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
 import User from "../models/User.js";
-import { use } from "react";
+
 
 // api controller fn to manage clerk user with db
 
