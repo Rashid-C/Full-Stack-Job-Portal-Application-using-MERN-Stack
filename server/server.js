@@ -1,16 +1,19 @@
-import './config/instrument.js';
+// import './config/instrument.js';
 import express from "express";
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from "./config/db.js";
-import * as Sentry from "@sentry/node"; // Keep only one import for Sentry
+import * as Sentry from "@sentry/node"; 
 import { clerkWebhooks } from './controllers/webhooks.js';
+import companyRoutes from './routes/companyRoutes.js'
+import connectCloudinary from './config/cloudinary.js';
 
 // Initialize express
 const app = express();
 
 // Connect to the database
 await connectDB();
+await connectCloudinary()
 
 // Middlewares
 app.use(cors());
@@ -24,6 +27,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 });
 
 app.post('/webhooks', clerkWebhooks);
+app.use('/api/company',companyRoutes)
 
 // Sentry error handling
 Sentry.setupExpressErrorHandler(app);
