@@ -15,27 +15,27 @@ import { protectCompany } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 //register a company
-router.post("/register",upload.single('image'), registerCompany);
+router.post("/register", upload.single("image"), registerCompany);
 
 //como log
 router.post("/login", loginCompany);
 
 // get com data
-router.get("/company",protectCompany, getCompanyData);
+router.get("/company", protectCompany, getCompanyData);
 
 //post a job
-router.post("/post-job", postJob);
+router.post("/post-job", protectCompany, postJob);
 
 //get applicants data of company
-router.get("/applicants", getCompanyJobApplicants);
+router.get("/applicants", protectCompany, getCompanyJobApplicants);
 
 //get copm job list
-router.get("/list-jobs", getCompanyPostedJob);
+router.get("/list-jobs", protectCompany, getCompanyPostedJob);
 
 //change apppli status
-router.post("/change-status", changeJobApplicationStatus);
+router.post("/change-status", protectCompany, changeJobApplicationStatus);
 
 //change appli visiblity
-router.post("/change-visiblity", changeVisiblity);
+router.post("/change-visiblity", protectCompany, changeVisiblity);
 
 export default router;
