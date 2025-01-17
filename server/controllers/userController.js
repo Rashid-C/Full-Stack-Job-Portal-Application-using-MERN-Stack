@@ -52,7 +52,27 @@ export const applyForJob = async (req, res) => {
 };
 
 //get user applied applications
-export const getUserJobApplication = async (req, res) => {};
+export const getUserJobApplication = async (req, res) => {
+  try {
+    const userId = req.auth.userId;
+
+    const application = await JobApplication.find({ userId })
+      .populate("companyId", "name email image")
+      .populate("jobId", "title description location category level salary")
+      .exec();
+
+    if (!application) {
+      return res.json({
+        success: false,
+        message: "No job application found for the user.",
+      });
+    }
+
+    return res.json({ success: true, application });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
 
 //update user profile(resume)
 export const updateUserResume = async (req, res) => {};
