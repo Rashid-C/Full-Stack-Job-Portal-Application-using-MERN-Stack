@@ -164,4 +164,22 @@ export const getCompanyPostedJob = async (req, res) => {
 export const changeJobApplicationStatus = async (req, res) => {};
 
 //change job visibility
-export const changeVisiblity = async (req, res) => {};
+export const changeVisiblity = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const companyId = req.company._id;
+
+    const job = await Job.findById(id);
+
+    if (companyId.toString() === job.companyId.toString()) {
+      job.visible = !job.visible;
+    }
+
+    await job.save();
+
+    res.json({ success: true, job });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
