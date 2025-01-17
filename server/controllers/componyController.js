@@ -147,7 +147,18 @@ export const postJob = async (req, res) => {
 export const getCompanyJobApplicants = async (req, res) => {};
 
 //get comony posted jobs
-export const getCompanyPostedJob = async (req, res) => {};
+export const getCompanyPostedJob = async (req, res) => {
+  try {
+    const companyId = req.company._id;
+
+    const jobs = await Job.find({ companyId });
+    // todo: Adding no of applicants info in data
+
+    res.json({ success: true, jobsData: jobs });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
 
 //change job applic status
 export const changeJobApplicationStatus = async (req, res) => {};
