@@ -2,6 +2,7 @@ import Company from "../models/Company.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import generateToken from "../utils/generateToken.js";
+import Job from "../models/Job.js";
 
 // register a new compoy
 export const registerCompany = async (req, res) => {
@@ -50,42 +51,42 @@ export const registerCompany = async (req, res) => {
 //compoly login
 export const loginCompany = async (req, res) => {
   const { email, password } = req.body;
-  
+
   try {
     // First, validate both email and password are non-empty strings
     if (!email?.trim() || !password?.trim()) {
       return res.json({
         success: false,
-        message: "Please provide both email and password"
+        message: "Please provide both email and password",
       });
     }
 
     // Find company by email
     const company = await Company.findOne({ email });
-    
+
     // Check if company exists
     if (!company) {
       return res.json({
         success: false,
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
     try {
       // Wrap bcrypt.compare in its own try-catch as it can throw if inputs are invalid
       const passwordMatch = await bcrypt.compare(password, company.password);
-      
+
       if (!passwordMatch) {
         return res.json({
           success: false,
-          message: "Invalid email or password"
+          message: "Invalid email or password",
         });
       }
     } catch (bcryptError) {
       // If bcrypt.compare throws an error (which it can with invalid inputs)
       return res.json({
         success: false,
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
@@ -100,12 +101,11 @@ export const loginCompany = async (req, res) => {
       },
       token: generateToken(company._id),
     });
-
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     return res.json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -115,7 +115,24 @@ export const getCompanyData = async (req, res) => {};
 
 // post a new job
 export const postJob = async (req, res) => {
-   
+  const { title, description, location, salary, level, category } = req.body;
+  const companyId = req.company._id;
+  try {
+    const newJob = new Job({
+      title,
+      description,
+      location,
+      salary,
+      companyId,
+      date: Date.now(),
+      level,
+      category,
+    });
+    await newJob.save();
+    res.json({ success: true, newJob });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
 };
 
 //get compony job applicats
