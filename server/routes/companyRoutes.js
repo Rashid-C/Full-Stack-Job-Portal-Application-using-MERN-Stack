@@ -10,6 +10,7 @@ import {
   registerCompany,
 } from "../controllers/componyController.js";
 import upload from "../config/multer.js";
+import { protectCompany } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.post("/register",upload.single('image'), registerCompany);
 router.post("/login", loginCompany);
 
 // get com data
-router.get("/company", getCompanyData);
+router.get("/company",protectCompany, getCompanyData);
 
 //post a job
 router.post("/post-job", postJob);
