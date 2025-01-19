@@ -6,7 +6,16 @@ import { AppContext } from "../context/AppContext";
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  const { companyData } = useContext(AppContext);
+  const { companyData, setCompanyData, setCompanyToken } = useContext(
+    AppContext
+  );
+  //fun to logout for company
+  const logout = () => {
+    setCompanyToken(null);
+    localStorage.removeItem("companyToken");
+    setCompanyData(null);
+    navigate("/");
+  };
   return (
     <div className="min-h-screen">
       {/* navbar for recruiter panel */}
@@ -30,7 +39,7 @@ const Dashboard = () => {
                 />
                 <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
                   <ul className="list-none m-0 p-2 bg-white rounded-md border text-sm">
-                    <li className="py-1 px-2 cursor-pointer pr-10">Logout</li>
+                    <li onClick={logout} className="py-1 px-2 cursor-pointer pr-10">Logout</li>
                   </ul>
                 </div>
               </div>
