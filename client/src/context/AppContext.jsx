@@ -120,6 +120,7 @@ export const AppContextProvider = (props) => {
     setUserData,
     userApplications,
     setUserApplications,
+    fetchUserData,
   };
 
   return (
