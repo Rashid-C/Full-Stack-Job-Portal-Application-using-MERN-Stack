@@ -9,6 +9,13 @@ const ViewApplications = () => {
   const { backendUrl, companyToken } = useContext(AppContext);
 
   const [applicats, setApplicats] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+
+const toggleMenu = (index) => {
+  setActiveMenu(activeMenu === index ? null : index);
+};
+
+
 
   //func to fetch company job appli data
   const fetchCompanyJobApplications = async () => {
@@ -26,11 +33,31 @@ const ViewApplications = () => {
     }
   };
 
+  // fuc to update job app status from admin
+  const changeJobApplicationStatus = async (id, status) => {
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/company/change-status",
+        { id, status },
+        { headers: { token: companyToken } }
+      );
+
+      if (data.success) {
+        fetchCompanyJobApplications();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     if (companyToken) {
       fetchCompanyJobApplications();
     }
   }, [companyToken]);
+
 
   return applicats ? (
     applicats.length === 0 ? (
@@ -87,21 +114,39 @@ const ViewApplications = () => {
                         />
                       </a>
                     </td>
+
                     <td className="py-2 px-4 border-b relative">
-                      <div className="relative inline-block text-left group">
-                        <button className="text-gray-500 action-button">
-                          ...
-                        </button>
-                        <div className="z-10 hidden absolute right-0 md:left-0 top-0 mt-2 w-32 bg-white border-gray-200 shadow group-hover:block">
-                          <button className="block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100">
-                            Accept
-                          </button>
-                          <button className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-                    </td>
+  {applicant.status === "Pending" ? (
+    <div className="relative inline-block text-left">
+      <button 
+        onClick={() => toggleMenu(index)}
+        className="text-gray-500 px-2 py-1"
+      >
+        •••
+      </button>
+      {activeMenu === index && (
+        <div className="z-10 absolute right-0 md:left-0 mt-2 w-32 bg-white border border-gray-200 shadow">
+          <button
+            onClick={() => changeJobApplicationStatus(applicant._id, "Accepted")}
+            className="block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100"
+          >
+            Accept
+          </button>
+          <button
+            onClick={() => changeJobApplicationStatus(applicant._id, "Rejected")}
+            className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+          >
+            Reject
+          </button>
+        </div>
+      )}
+    </div>
+  ) : (
+    <div className={`${applicant.status === "Accepted" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} px-3 py-1.5 rounded text-sm`}>
+      {applicant.status}
+    </div>
+  )}
+</td>
                   </tr>
                 ))}
             </tbody>
