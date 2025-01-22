@@ -10,12 +10,17 @@ import JobCard from "../components/JobCard";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "@clerk/clerk-react";
 
 const ApplyJob = () => {
   const { id } = useParams();
-  const navigate=useNavigate()
+
+  const { getToken } = useAuth();
+  const navigate = useNavigate();
   const [jobData, setJobData] = useState(null);
-  const { jobs, backendUrl ,userData,userApplications} = useContext(AppContext);
+  const { jobs, backendUrl, userData, userApplications } = useContext(
+    AppContext
+  );
 
   const fetchJob = async () => {
     try {
@@ -30,23 +35,34 @@ const ApplyJob = () => {
     }
   };
 
-//apply for a job
-const applyHandler=async()=>{
-  try {
-    if(!userData){
-      return toast.error('Logon to apply for jobs')
+  //apply for a job
+  const applyHandler = async () => {
+    try {
+      if (!userData) {
+        return toast.error("Logon to apply for jobs");
+      }
+
+      if (!userData.resume) {
+        navigate("/applications");
+        return toast.error("Upload resume to apply");
+      }
+
+      const token = await getToken();
+
+      const { data } = await axios.post(
+        backendUrl + "/api/users/apply",
+        { jobId: jobData._id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
-
-    if(!userData.resume){
-      navigate('/applications')
-      return toast.error('Upload resume to apply')
-
-    }
-  } catch (error) {
-    
-  }
-}
-
+  };
 
   useEffect(() => {
     fetchJob();
@@ -89,7 +105,10 @@ const applyHandler=async()=>{
             </div>
 
             <div className="flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center">
-              <button onClick={applyHandler} className="bg-blue-600  p-2.5 px-10 text-white rounded ">
+              <button
+                onClick={applyHandler}
+                className="bg-blue-600  p-2.5 px-10 text-white rounded "
+              >
                 Apply Now
               </button>
               <p className="mt-1 text-gray-600">
@@ -105,7 +124,10 @@ const applyHandler=async()=>{
                 className="rich-text"
                 dangerouslySetInnerHTML={{ __html: jobData.description }}
               ></div>
-              <button onClick={applyHandler} className="bg-blue-600  p-2.5 px-10 text-white rounded mt-10">
+              <button
+                onClick={applyHandler}
+                className="bg-blue-600  p-2.5 px-10 text-white rounded mt-10"
+              >
                 Apply Now
               </button>
             </div>
