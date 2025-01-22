@@ -2,9 +2,9 @@ import Job from "../models/Job.js";
 import JobApplication from "../models/jobApplication.js";
 import User from "../models/User.js";
 import { v2 as cloudinary } from "cloudinary";
-//get user data
+
 export const getUserData = async (req, res) => {
-  const userId = req.auth.userId; //clerk auth with frondent
+  const userId = req.auth.userId;
 
   try {
     const user = await User.findById(userId);
@@ -19,10 +19,8 @@ export const getUserData = async (req, res) => {
   }
 };
 
-// apply for a job
 export const applyForJob = async (req, res) => {
   const { jobId } = req.body;
-
   const userId = req.auth.userId;
 
   try {
@@ -51,11 +49,10 @@ export const applyForJob = async (req, res) => {
   }
 };
 
-//get user applied applications
 export const getUserJobApplication = async (req, res) => {
   try {
     const userId = req.auth.userId;
-
+    
     const application = await JobApplication.find({ userId })
       .populate("companyId", "name email image")
       .populate("jobId", "title description location category level salary")
@@ -68,24 +65,22 @@ export const getUserJobApplication = async (req, res) => {
       });
     }
 
-    return res.json({ success: true, application });
+    return res.json({ success: true, application }); // Keep as application since that's what frontend expects
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
 };
 
-//update user profile(resume)
 export const updateUserResume = async (req, res) => {
   try {
     const userId = req.auth.userId;
-
-    const resumeFile = req.file
+    const resumeFile = req.file;
 
     const userData = await User.findById(userId);
 
     if (resumeFile) {
-      const resumeUpload = cloudinary.uploader.upload(resumeFile.path);
-      userData.resume = (await resumeUpload).secure_url;
+      const resumeUpload = await cloudinary.uploader.upload(resumeFile.path);
+      userData.resume = resumeUpload.secure_url;
     }
 
     await userData.save();

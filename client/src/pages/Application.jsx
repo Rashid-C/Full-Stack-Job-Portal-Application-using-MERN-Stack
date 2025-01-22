@@ -1,18 +1,20 @@
 import { useContext, useState } from "react";
 import Navbar from "../components/Navbar";
-import { assets, jobsApplied } from "../assets/assets";
+import { assets } from "../assets/assets";
 import moment from "moment";
 import Footer from "../components/Footer";
 import { AppContext } from "../context/AppContext";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { toast } from "react-toastify";
+
 const Application = () => {
   const { user } = useUser();
   const { getToken } = useAuth();
 
   const [isEdit, setIsEdit] = useState(false);
   const [resume, setResume] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { backendUrl, userData, userApplications, fetchUserData } = useContext(
     AppContext
@@ -43,17 +45,18 @@ const Application = () => {
     setIsEdit(false);
     setResume(null);
   };
+
   return (
     <>
       <Navbar />
       <div className="container px-4 min-h-[65vh] 2xl:px-20 mx-auto my-10">
         <h2 className="text-xl font-semibold">Your Resume</h2>
         <div className="flex gap-2 mb-2 mt-3">
-          {isEdit || userData && userData.resume ==="" ? (
+          {isEdit || (userData && userData.resume === "") ? (
             <>
               <label className="flex items-center" htmlFor="resumeUpload">
                 <p className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg mr-2">
-                  {resume? resume.name : 'Select Resume'}
+                  {resume ? resume.name : "Select Resume"}
                 </p>
                 <input
                   id="resumeUpload"
@@ -78,9 +81,11 @@ const Application = () => {
             <div className="flex gap-2">
               <a
                 className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg"
-                href=""
+                href={userData?.resume}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Resume
+                View Resume
               </a>
               <button
                 onClick={() => setIsEdit(true)}
@@ -91,7 +96,8 @@ const Application = () => {
             </div>
           )}
         </div>
-        <h2 className="text-xl font-semibold mb-4">Job Applied</h2>
+
+        <h2 className="text-xl font-semibold mb-4">Jobs Applied</h2>
         <table className="min-w-full bg-white border rounded-lg">
           <thead>
             <tr>
@@ -107,20 +113,26 @@ const Application = () => {
             </tr>
           </thead>
           <tbody>
-            {jobsApplied.map((job, index) =>
-              true ? (
+            {!userApplications || userApplications.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center py-4">
+                  No applications found
+                </td>
+              </tr>
+            ) : (
+              userApplications.map((job, index) => (
                 <tr key={index}>
                   <td className="py-3 px-4 flex items-center gap-2 border-b">
                     <img
                       className="w-8 h-8"
-                      src={job.logo}
-                      alt="compony logo"
+                      src={job.companyId.image}
+                      alt="company logo"
                     />
-                    {job.company}
+                    {job.companyId.name}
                   </td>
-                  <td className="py-2 px-4 border-b">{job.title}</td>
+                  <td className="py-2 px-4 border-b">{job.jobId.title}</td>
                   <td className="py-2 px-4 border-b max-sm:hidden">
-                    {job.location}
+                    {job.jobId.location}
                   </td>
                   <td className="py-2 px-4 border-b max-sm:hidden">
                     {moment(job.date).format("ll")}
@@ -139,7 +151,7 @@ const Application = () => {
                     </span>
                   </td>
                 </tr>
-              ) : null
+              ))
             )}
           </tbody>
         </table>
