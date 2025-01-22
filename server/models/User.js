@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  email: {
     type: String,
     required: true,
     unique: true,
@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    Request: true,
+    required: true,
   },
 });
 
