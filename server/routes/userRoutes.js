@@ -1,5 +1,5 @@
 import express from "express";
-import { clerkMiddleware } from "@clerk/express";
+// import { clerkMiddleware } from "@clerk/express";
 import {
   applyForJob,
   getUserData,
@@ -11,7 +11,7 @@ import upload from "../config/multer.js";
 const router = express.Router();
 
 // Apply clerk middleware to all user routes
-router.use(clerkMiddleware());
+// router.use(clerkMiddleware());
 
 //get userdata
 router.get("/user", getUserData);
