@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { assets } from "../assets/assets";
 import moment from "moment";
@@ -16,9 +16,13 @@ const Application = () => {
   const [resume, setResume] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { backendUrl, userData, userApplications, fetchUserData } = useContext(
-    AppContext
-  );
+  const {
+    backendUrl,
+    userData,
+    userApplications,
+    fetchUserData,
+    fetchUserApplications,
+  } = useContext(AppContext);
 
   const updateResume = async () => {
     try {
@@ -45,6 +49,12 @@ const Application = () => {
     setIsEdit(false);
     setResume(null);
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchUserApplications();
+    }
+  }, [user]);
 
   return (
     <>

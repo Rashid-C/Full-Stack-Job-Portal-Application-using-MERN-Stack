@@ -11,11 +11,9 @@ const ViewApplications = () => {
   const [applicats, setApplicats] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
 
-const toggleMenu = (index) => {
-  setActiveMenu(activeMenu === index ? null : index);
-};
-
-
+  const toggleMenu = (index) => {
+    setActiveMenu(activeMenu === index ? null : index);
+  };
 
   //func to fetch company job appli data
   const fetchCompanyJobApplications = async () => {
@@ -57,7 +55,6 @@ const toggleMenu = (index) => {
       fetchCompanyJobApplications();
     }
   }, [companyToken]);
-
 
   return applicats ? (
     applicats.length === 0 ? (
@@ -116,37 +113,53 @@ const toggleMenu = (index) => {
                     </td>
 
                     <td className="py-2 px-4 border-b relative">
-  {applicant.status === "Pending" ? (
-    <div className="relative inline-block text-left">
-      <button 
-        onClick={() => toggleMenu(index)}
-        className="text-gray-500 px-2 py-1"
-      >
-        •••
-      </button>
-      {activeMenu === index && (
-        <div className="z-10 absolute right-0 md:left-0 mt-2 w-32 bg-white border border-gray-200 shadow">
-          <button
-            onClick={() => changeJobApplicationStatus(applicant._id, "Accepted")}
-            className="block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100"
-          >
-            Accept
-          </button>
-          <button
-            onClick={() => changeJobApplicationStatus(applicant._id, "Rejected")}
-            className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
-          >
-            Reject
-          </button>
-        </div>
-      )}
-    </div>
-  ) : (
-    <div className={`${applicant.status === "Accepted" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} px-3 py-1.5 rounded text-sm`}>
-      {applicant.status}
-    </div>
-  )}
-</td>
+                      {applicant.status === "Pending" ? (
+                        <div className="relative inline-block text-left">
+                          <button
+                            onClick={() => toggleMenu(index)}
+                            className="text-gray-500 px-2 py-1"
+                          >
+                            •••
+                          </button>
+                          {activeMenu === index && (
+                            <div className="z-10 absolute right-0 md:left-0 mt-2 w-32 bg-white border border-gray-200 shadow">
+                              <button
+                                onClick={() =>
+                                  changeJobApplicationStatus(
+                                    applicant._id,
+                                    "Accepted"
+                                  )
+                                }
+                                className="block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={() =>
+                                  changeJobApplicationStatus(
+                                    applicant._id,
+                                    "Rejected"
+                                  )
+                                }
+                                className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          className={`${
+                            applicant.status === "Accepted"
+                              ? "bg-green-100 text-green-600"
+                              : "bg-red-100 text-red-600"
+                          } px-3 py-1.5 rounded text-sm`}
+                        >
+                          {applicant.status}
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))}
             </tbody>
