@@ -162,9 +162,11 @@ const ApplyJob = () => {
                 )
                 .filter((job) => {
                   // set of applied jobs ID's
-                  const appliedJobsIds= new Set(userApplications.map( app =>app.jobId && app.jobId._id))
+                  const appliedJobsIds = new Set(
+                    userApplications.map((app) => app.jobId && app.jobId._id)
+                  );
                   // return true if the user has not already applied for this job
-                  return !appliedJobsIds.has(job._id)
+                  return !appliedJobsIds.has(job._id);
                 })
                 .slice(0, 4)
                 .map((job, index) => (
