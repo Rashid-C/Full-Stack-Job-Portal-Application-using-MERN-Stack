@@ -182,7 +182,17 @@ export const getCompanyPostedJob = async (req, res) => {
 };
 
 //change job applic status
-export const changeJobApplicationStatus = async (req, res) => {};
+export const changeJobApplicationStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    // find job appli and update status
+    await JobApplication.findOneAndUpdate({ _id: id }, { status });
+
+    res.json({ success: true, message: "Status Changed" });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
 
 //change job visibility
 export const changeVisiblity = async (req, res) => {
